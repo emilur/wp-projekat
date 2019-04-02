@@ -1,0 +1,230 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Pocetna</title>
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+<body ng-app="Aplikacija">
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-8 col-md-7 py-4">
+                <h4 class="text-white">O nama</h4>
+                <p class="text-muted">Lorem ipsum dolor sit amet, mazim fabulas similique sea no, at consul recusabo eum. Affert volumus assentior id his. An veri latine antiopam quo, ex offendit referrentur est. Nam platonem vulputate scribentur ad. Duo scaevola repudiandae in, eu qui nonumes noluisse philosophia. Eu nec posse persecuti, has quis affert indoctum te.</p>
+              </div>
+              <div class="col-sm-4 offset-md-1 py-4">
+                <h4 class="text-white">Kontakt</h4>
+                <ul class="list-unstyled">
+                  <li><a href="#" class="text-white">Zapratite nas na Twitteru</a></li>
+                  <li><a href="#" class="text-white">Zapratite nas na Facebooku</a></li>
+                  <li><a href="#" class="text-white">Posaljite nam e-mail</a></li>
+                  <li><a href="/log" class="text-white">ODJAVITE SE</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+          <div class="container d-flex justify-content-between">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2" focusable="false" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <strong>Agencija za nekretnine</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </div>
+    </header>
+
+    <div class="bg-light text-dark" style="padding-top:50px; padding-bottom:50px">
+
+        <div class="container">
+            <div ng-controller="NekretnineCtrl as ln">
+                <div ng-repeat="nekretnina in ln.nekretnine track by $index">
+                    <div class="btn-group float-right">
+                
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#prikaziModal" ng-click="ln.dobaviNekretninu(nekretnina.id)"> Prikaži</button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-toggle="modal" data-target="#izmeniModal" ng-click="ln.pripremiZaIzmenu(nekretnina)"> Izmeni</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#izbrisiModal" ng-click="ln.ukloni(nekretnina.id)">
+                            <span aria-hidden="true">&times;</span> Ukloni</button>
+                    </div>
+                    <h1>{{nekretnina.title}}</h1>
+                    <h5>{{nekretnina.location}}</h5>
+                    <p>{{nekretnina.price}}</p>
+                    <img class="rounded mx-auto d-block" ng-src="{{nekretnina.image_src}}" alt="Slika" width="200" height="200">
+                    <hr>
+                    
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="prikaziModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">{{ln.nekretnina.title}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><span class="font-italic">Lokacija: </span>{{ln.nekretnina.location}}</p>
+                            <p><span class="font-italic">Cena: </span>{{ln.nekretnina.price}}</p>
+                            <p><span class="font-italic">Detalji: </span>{{ln.nekretnina.other_info}}</p>
+                            <img class="rounded mx-auto d-block" ng-src="{{ln.nekretnina.image_src}}" alt="Slika" width="450" height="450">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Izadji</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="izmeniModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Izmeni nekretninu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="izmenaID" name="izmenaNekretnine" ng-submit="izmenaNekretnine.$valid && ln.izmeniNekretninu()">
+                                <div class="form-group">
+                                    <label for="naslov">Naslov</label>
+                                    <input type="text" class="form-control" ng-class="{'is-invalid': izmenaNekretnine.naslov.$invalid}" id="naslov" name="naslov"
+                                        aria-describedby="naslov" placeholder="Naslov" ng-model="ln.zaIzmenu.title" ng-required="true">
+                                </div>
+                                <div class="form-grouop">
+                                    <label for="lokacija">Lokacija</label>
+                                    <input type="text" class="form-control" ng-class="{'is-invalid': izmenaNekretnine.lokacija.$invalid}" id="lokacija" name="lokacija"
+                                        aria-describedby="lokacija" placeholder="Lokacija" ng-model="ln.zaIzmenu.location" ng-required="true">
+                                </div>
+                                <div class="form-grouop">
+                                    <label for="cena">Cena</label>
+                                    <input type="text" class="form-control" ng-class="{'is-invalid': izmenaNekretnine.cena.$invalid}" id="cena" name="cena"
+                                        aria-describedby="cena" placeholder="Cena" ng-model="ln.zaIzmenu.price" ng-required="true">
+                                </div>
+                                <div class="form-group">
+                                    <label for="info">Informacije o nekretnini</label>
+                                    <textarea class="form-control" id="info" name="info" placeholder="Informacije o nekretnini" ng-model="ln.zaIzmenu.other_info"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="imageSrc">Putanja do slike</label>
+                                    <input type="text" class="form-control" id="imageSrc" name="imageSrc" placeholder="Putanja do slike" ng-model="ln.zaIzmenu.image_src" 
+                                        ng-class="{'is-invalid': izmenaNekretnine.imageSrc.$invalid}" ng-required="true" aria-describedby="imageSrc">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Izadji</button>
+                            <button id="izmeniButton" type="submit" class="btn btn-primary" form="izmenaID" ng-disabled="izmenaNekretnine.$invalid">Izmeni</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="izbrisiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Obavestenje</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                        Nekretnina izbrisana!
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <button style="margin-top:30px;margin-bottom: 30px;" id="dodajButton" type="button" class="btn btn-outline-primary btn-lg btn-block" ng-click="ln.dodajBool=true">Dodaj novu nekretninu</button>
+
+                <div ng-if="ln.dodajBool==true">
+
+                    <h1 style="align-content:center;">Unos nekretnine</h1>
+
+                    <div class="alert alert-danger" role="alert" ng-if="unosNekretnine.$invalid">
+                        Forma je neispravno popunjena!
+                    </div>
+                    <form name="unosNekretnine" ng-submit="unosNekretnine.$valid && ln.dodaj()">
+                        <div class="form-group">
+                            <label for="naslov">Naslov</label>
+                            <input type="text" class="form-control" ng-class="{'is-invalid': unosNekretnine.naslov.$invalid}" id="naslov" name="naslov" aria-describedby="naslov"
+                                placeholder="Unesite naslov" ng-model="ln.novi.title" ng-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Lokacija</label>
+                            <input type="text" class="form-control" ng-class="{'is-invalid': unosNekretnine.lokacija.$invalid}" id="lokacija" name="lokacija" placeholder="Unesite lokacija"
+                                ng-model="ln.novi.location" ng-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cena">Cena nekretnine</label>
+                            <input type="text" class="form-control" ng-class="{'is-invalid': unosNekretnine.cena.$invalid}" id="cena" name="cena" placeholder="Unesite cenu nekretnine"
+                                ng-model="ln.novi.price" ng-required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="datum">Detalji o nekretnini</label>
+                            <textarea class="form-control"  id="info" name="info" placeholder="Unesite jos informacija o nekretnini(opciono)" ng-model="ln.novi.other_info"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageSrc">Putanja do slike nekretnine</label>
+                            <input type="text" class="form-control" id="imageSrc" name="imageSrc" placeholder="Unesite putanju do slike nekretnine" ng-model="ln.novi.image_src" 
+                            ng-class="{'is-invalid': unosNekretnine.imageSrc.$invalid}" ng-required="true" >
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-outline-danger" ng-click="ln.dodajBool=false">Odustani</button>
+                            <input class="btn btn-primary" type="submit" ng-disabled="unosNekretnine.$invalid" value="Dodaj">
+                        </div>
+                    </form>
+
+                </div>
+            
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <footer class="text-muted">
+        <div class="container">
+          <p class="float-right">
+            <a href="#">Vrati se na pocetak</a>
+          </p>
+          <p>Album example is © Bootstrap, but please download and customize it for yourself!</p>
+          <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
+        </div>
+    </footer>
+
+
+    <script src="js/jquery/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.js/popper.min.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+
+    <script src="js/angularjs/angular.min.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/realestates/realestates.js"></script>
+
+    <script>
+        $('#izmeniButton').click(function() {
+            $('#izmeniModal').modal('hide');
+        });
+    </script>
+</body>
+
+</html>
